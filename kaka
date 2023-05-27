@@ -1,0 +1,150 @@
+#Convolution
+a = np.array([-5, 2, 3]) #write the first vector
+b = np.array([5, 3, -1, 1]) #write the second vector
+
+def toeplitz(a,n):
+    m = len(a)
+    T = np.zeros((n+m-1,n))
+    for j in range(n):
+        T[j:j+m,j] = a
+    return T
+
+Tb = toeplitz(a,len(b))
+Tb 
+Tb @ b
++++++++++++++++++++++++++++
+#inverse matrix
++++++++++++++++++++++++
+import numpy as np
+A = np.array([[-2, 7] ,[3, 6]])########change matrix
+B = np.linalg.inv(A)
+B
+++++++++++++++++++++++++++++++++
+#Solving system of linear equations
+++++++++++++++++++++++++++++++++++++
+A = np.array([[1,-3, 7], [-1,4,-6], [1,4,6],[1,-3,0]])######change
+b=[3,0,3,1]######change
+
+import numpy as np
+def gram_schmidt(a):
+    q = []
+    for i in range(len(a)):
+        #orthogonalization
+        q_tilde = a[i]
+        for j in range(len(q)):
+            q_tilde = q_tilde - (q[j] @ a[i])*q[j]
+        #Test for dependennce
+        if np.sqrt(sum(q_tilde**2)) <= 1e-10:
+            print('Vectors are linearly dependent.')
+            print('GS algorithm terminates at iteration ', i+1)
+            return q
+        #Normalization
+        else:
+            q_tilde = q_tilde / np.sqrt(sum(q_tilde**2))
+            q.append(q_tilde)
+    print('Vectors are linearly independent.')
+    return q
+
+Q = gram_schmidt(A)
+
+def QR_factorization(A):
+    Q_transpose = np.array(gram_schmidt(A.T))
+    R = Q_transpose @ A
+    Q = Q_transpose.T
+    return Q, R
+Q, R = QR_factorization(A)
+
+
+
+def solve_via_backsub(A,b):
+    Q,R = QR_factorization(A)
+    b_tilde = Q.T @ b
+    x = back_subst(R,b_tilde)
+    return x
+print("A=\n",A)
+print("Q=\n",Q)
+print("R=\n",R)
+print("x=\n",np.linalg.inv(R)@(Q.T)@b," <- you need this ")
+print("R inv=\n",np.linalg.inv(R))
+print("QT=\n",Q.T)
++++++++++++++++++++++++++++++++++++++=
+#QR_factorization
++++++++++++++++++++++++
+import numpy as np
+def gram_schmidt(a):
+    q = []
+    for i in range(len(a)):
+        #orthogonalization
+        q_tilde = a[i]
+        for j in range(len(q)):
+            q_tilde = q_tilde - (q[j] @ a[i])*q[j]
+        #Test for dependennce
+        if np.sqrt(sum(q_tilde**2)) <= 1e-10:
+            print('Vectors are linearly dependent.')
+            print('GS algorithm terminates at iteration ', i+1)
+            return q
+        #Normalization
+        else:
+            q_tilde = q_tilde / np.sqrt(sum(q_tilde**2))
+            q.append(q_tilde)
+    print('Vectors are linearly independent.')
+    return q
+A = np.array([ [1,-3,7], [-1,4,-6], [1,4,6], [1,-3, 0] ])############change
+Q = gram_schmidt(A)
+
+def QR_factorization(A):
+    Q_transpose = np.array(gram_schmidt(A.T))
+    R = Q_transpose @ A
+    Q = Q_transpose.T
+    return Q, R
+Q, R = QR_factorization(A)
+print(Q)
+print(R)
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#FIND left inv
++++++++++++++++++++++++++++++++
+import numpy as np
+A = np.array([[-3,-4], [4,6], [1,1]])#########change
+#left inverse
+left= np.linalg.solve(A.T.dot(A), A.T)
+print(left,"\n")
+print(left@A)
+++++++++++++++++++++++++++++++++++
+#right inverse
++++++++++++++++++++++++++++++
+import numpy as np
+A = np.array([[1,1,1,1], [0,1,1,0],[0,0,1,1]])#########change
+right= (A.T)@np.linalg.inv(A@A.T)
+print(right,"\n")
+print(A@right)
+++++++++++++++++++++++++++++++++++++++
+#upper triangular part of a matrix
+++++++++++++++++++++++++++++++++++++++++
+import numpy as np
+A = np.array([ [1,-1,4], [1,4,-2], [1,4,2],[1,-1,0] ])#########change
+np.triu(A)
++++++++++++++++++++++++++++++++++++++++++
+#power matrix
++++++++++++++++++++++++++++++++++++++++++++++
+import numpy as np
+A = np.array([[0,1,0,0,1], [1,0,1,0,0], [0,0,1,1,1], [1,0,0,0,0], [0,0,0,1,0]])#########change
+np.linalg.matrix_power(A,2)
++++++++++++++++++++++++++++++++++++++
+#Second difference matrix.
++++++++++++++++++++++++++++++++++++++++
+D = lambda n: np.c_[-np.identity(n-1), np.zeros(n-1)] + np.c_[np.zeros(n-1), np.identity(n-1)]
+D(4)
+D(5)
+Delta = D(4) @ D(5) #Second difference matrix
+print(Delta)
+
+A=np.array([-2, -2,3,-1,-3])#############change
+print('\n the answer',Delta@A)
+++++++++++++++++++++++++++++++++++++++++++++++++++++
+# smoothness Dirichlet energy.
++++++++++++++++++++++++++++++++++++++++
+import numpy as np
+A = np.array([[-1,-1,0,1,0], [1,0,-1,0,0], [0,0,1,-1,-1], [0,1,0,0,1]])#############change
+vsmooth = np.array([0,2,0,1])
+np.linalg.norm(A.T @ vsmooth)**2 #Dirichlet energy of vsmooth
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
